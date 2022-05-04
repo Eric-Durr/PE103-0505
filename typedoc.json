@@ -1,5 +1,7 @@
 {
   "entryPoints": [
+    "src/Client.class.ts",
+    "src/Server.class.ts"
   ],
   "out": "doc"
 }
