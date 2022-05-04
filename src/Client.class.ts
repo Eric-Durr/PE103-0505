@@ -1,4 +1,5 @@
 import { connect, Socket } from 'net';
+import EventEmitter from 'events';
 
 /**
  * # Client Class | Primary parent class
@@ -11,15 +12,26 @@ import { connect, Socket } from 'net';
  * - connectToServer() | connects to a server
  */
 
-export default class Server {
+export default class Server extends EventEmitter {
   private port: number;
 
-  constructor(port: number) { this.port = port; }
+  private connection: Socket;
+
+  constructor(port: number) {
+    super();
+    this.port = port;
+    this.connection = connect({ port: this.port });
+  }
 
   public connectToServer(): void {
-    const connection: Socket = connect({ port: this.port });
-    connection.on('data', (dataJSON: Buffer) => {
+    this.connection.on('data', (dataJSON: Buffer) => {
       console.log(dataJSON.toString());
+      this.emit('received-data', dataJSON.toString());
+    });
+
+    this.connection.on('end', () => {
+      this.connection.destroy();
+      process.exit(0);
     });
   }
 }

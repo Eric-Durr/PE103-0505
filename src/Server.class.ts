@@ -21,6 +21,7 @@ export default class Server {
       connection.on('close', () => {
         console.log('Client has disconected');
       });
+      connection.destroy();
     }).listen(this.port, () => {
       console.log(`Server running on port ${this.port}`);
     });
